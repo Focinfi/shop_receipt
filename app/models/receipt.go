@@ -54,14 +54,13 @@ func NewReceipt(barCodes []string) *Receipt {
 		quantity := 1
 		if quantityCode != "" {
 			productBarCode = strings.TrimSuffix(productBarCode, quantityCode)
-			productBarCode = strings.TrimPrefix(quantityCode, "-")
-			quantity, _ = strconv.Atoi(productBarCode)
+			quantityCode = strings.TrimPrefix(quantityCode, "-")
+			quantity, _ = strconv.Atoi(quantityCode)
 		}
 
 		if li, ok := lineItems[productBarCode]; !ok {
 			lineItems[productBarCode] = NewLineItem(productBarCode, quantity)
 		} else {
-			fmt.Println(quantity)
 			li.Quantity += quantity
 		}
 	}

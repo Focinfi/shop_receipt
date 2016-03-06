@@ -31,8 +31,8 @@ var (
 		cup.BarCode,
 		cup.BarCode,
 		coffee.BarCode,
-		sugar.BarCode,
-		sugar.BarCode}
+		fmt.Sprintf("%s-%d", sugar.BarCode, 2),
+	}
 )
 
 func TestLineItem(t *testing.T) {
