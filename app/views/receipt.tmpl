@@ -1,0 +1,17 @@
+*******<Frank's Shop> Shopping List*********
+{{range .LineItems}}
+{{ . }}
+{{end}}
+--------------------------------------------
+{{range $key, $value := .FavorableLineItemMap}}
+{{index $key}}:
+{{range $value }}
+{{ . }}
+{{end}}
+{{end}}
+--------------------------------------------
+total: {{ .Total }}(元)
+{{if gt .CostSaving 0.0 }}
+cost saving: {{ .CostSaving }}(元)
+{{end}}
+********************************************

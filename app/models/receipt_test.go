@@ -33,6 +33,27 @@ var (
 		coffee.BarCode,
 		fmt.Sprintf("%s-%d", sugar.BarCode, 2),
 	}
+	message = `*******<Frank's Shop> Shopping List*********
+
+name: Cup, quantity: 3, unit price: 14.00(元), subtotal: 28.00(元), cost saving: 14.00(元)
+
+name: Coffee, quantity: 1, unit price: 4.00(元), subtotal: 3.60(元), cost saving: 0.40(元)
+
+name: Sugar, quantity: 2, unit price: 0.50(元), subtotal: 1.00(元)
+
+--------------------------------------------
+
+3 for 2:
+
+name: Cup, quantity: 1
+
+
+--------------------------------------------
+total: 32.6(元)
+
+cost saving: 14.4(元)
+
+********************************************`
 )
 
 func TestLineItem(t *testing.T) {
@@ -57,7 +78,8 @@ func TestReceipt(t *testing.T) {
 			Expect(len(receipt.LineItems), ShouldEqual, 3)
 			Expect(receipt.Total(), ShouldEqual, float64(14*2+4*0.9+0.5*2))
 			Expect(receipt.CostSaving(), ShouldEqual, float64(14*1+4*0.1))
-			Expect(receipt.SpecialOffers()["3 for 2"][0].Quantity, ShouldEqual, 1)
+			Expect(receipt.FavorableLineItemMap()["3 for 2"][0].Quantity, ShouldEqual, 1)
+			Expect(receipt.Message(), ShouldEqual, message)
 		})
 	})
 }

@@ -1,11 +1,14 @@
 package models
 
 import (
+	"bytes"
 	"fmt"
-	"github.com/Focinfi/shop_receipt/config"
+	"github.com/Focinfi/shop_receipt/libs"
+
 	"regexp"
 	"strconv"
 	"strings"
+	"text/template"
 )
 
 type Receipt struct {
@@ -52,7 +55,7 @@ func (r Receipt) CostSaving() float64 {
 	return costSaving
 }
 
-func (r Receipt) SpecialOffers() map[string][]FavorableLineItem {
+func (r Receipt) FavorableLineItemMap() map[string][]FavorableLineItem {
 	favorableLineItemsMap := map[string][]FavorableLineItem{}
 	for _, li := range r.LineItems {
 		for _, promotion := range FindAllPromotions(li.product.BarCode) {
@@ -70,24 +73,11 @@ func (r Receipt) SpecialOffers() map[string][]FavorableLineItem {
 }
 
 func (r Receipt) Message() string {
-	header := fmt.Sprintf("******<%s> shopping list\n", config.AppName)
-	footer := "************************\n"
-	intervalLine := "------------------------\n"
-	var lineItems string
-	var favorableLineItems string
-	var total string
-
-	for _, li := range r.LineItems {
-		lineItems += fmt.Sprintf("%v\n", li)
+	tmpl, err := template.ParseFiles(libs.TmplFilePathWithName("receipt"))
+	if err != nil {
+		panic("Receipt#Message: " + err.Error())
 	}
-
-	for name, lineItems := range r.SpecialOffers() {
-		favorableLineItems += fmt.Sprintf("%s:\n", name)
-		for _, li := range lineItems {
-			favorableLineItems += fmt.Sprintf("%v\n", li)
-		}
-	}
-
-	total = fmt.Sprintf("total: %.2f \n", r.Total())
-	return fmt.Sprint(header, lineItems, intervalLine, favorableLineItems, intervalLine, total, footer)
+	var outputs bytes.Buffer
+	tmpl.Execute(&outputs, r)
+	return outputs.String()
 }
