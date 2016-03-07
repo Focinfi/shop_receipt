@@ -1,6 +1,6 @@
 ## Shop Receipt
 
-## What this project try to resolve?
+## What this project tries to resolve?
 
 ```
 需求描述
@@ -95,10 +95,10 @@
 ```
 
 ### Install
-Assume that you have installed go1.5 and set $GOPATH
+Assuming that you have installed go1.5 and `$GOPATH` has been set.
 
 ```shell
-go get github.com/Focinfi/shop_receipt
+go get github.com/Focinfi/shop_receipt/app/models
 ```
 
 ### Test
@@ -107,24 +107,24 @@ go test github.com/Focinfi/shop_receipt/app/models -v
 ```
 
 ### Project Structure
-This project assume that it will be used as a backend server.
+This project assumes that it will be used as a backend server.
 
-1. `app/models` contains all models:
+1. `app/models`:
   1. `product.go` defines Product struct
-  1. `lineitem.go` defines LineItem struct as line-item for receipt, and subtotal, total calculation methods
+  1. `lineitem.go` defines LineItem struct as line-item for receipt with subtotal, total calculation methods
   1. `promotion.go` defines Promotion and PromotionType for products 
   1. `favorable_lineitem.go` defines FavorableLineItems struct for line-items of the favorable products part in receipt
-  1. `receipt.go` defines the Receipt struct fot shopping list
+  1. `receipt.go` defines Receipt struct for shopping list
   1. `receipt_test.go` testing for receipt.go
 
 1.  `app/views` contains all views:
-  1. receipt.tmpl
+  1. receipt.tmpl view template for Receipt
 
-1. config
+1. `config`:
   1. `app.go` contains global settings: current language and currency
   1. `tarnslation.go` contains translation map
 
-1. libs
+1. `libs`:
   1. `utils.go` contains helper methods
   1. `view_funcMap.go` contains a map of methods used in template
   1. `translation.go` contains translate method

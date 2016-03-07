@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func Translation(key string) string {
+func Translate(key string) string {
 	translationKey := fmt.Sprintf("%s_%s", key, config.CurrentLocal)
 	translated, ok := config.Translations[translationKey]
 	if !ok {

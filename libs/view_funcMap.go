@@ -11,5 +11,5 @@ func MoneyOf(n float64) string {
 
 var ReceiptFuncMap = map[string]interface{}{
 	"money_of": MoneyOf,
-	"t":        Translation,
+	"t":        Translate,
 }
