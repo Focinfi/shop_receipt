@@ -15,9 +15,9 @@ var Expect = So
 
 var (
 	// Product
-	cola         = Product{BarCode: "ITEM000005", Name: "可口可乐", Uint: "瓶", Price: float64(3)}
-	badminton    = Product{BarCode: "ITEM000001", Name: "羽毛球", Uint: "个", Price: float64(1)}
-	apple        = Product{BarCode: "ITEM000003", Name: "苹果", Uint: "斤", Price: float64(5.5)}
+	cola         = Product{BarCode: "ITEM000005", Name: "可口可乐", Unit: "bottle", Price: float64(3)}
+	badminton    = Product{BarCode: "ITEM000001", Name: "羽毛球", Unit: "one", Price: float64(1)}
+	apple        = Product{BarCode: "ITEM000003", Name: "苹果", Unit: "0.5kg", Price: float64(5.5)}
 	testProducts = map[string]Product{badminton.BarCode: badminton, apple.BarCode: apple, cola.BarCode: cola}
 
 	// Promotion
