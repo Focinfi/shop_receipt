@@ -1,17 +1,17 @@
-*******<Frank's Shop> Shopping List*********
-{{range .LineItems}}
-{{ . }}
+*******<{{ t "app_name" }}> {{ t "receipt_shopping_list" }}*********
+{{range $li := .LineItems}}
+{{ t "receipt_name"}}: {{ $li.Product.Name }}, {{ t "receipt_quantity"}}: {{ $li.Quantity }}, {{ t "receipt_price"}}: {{ money_of $li.Product.Price}}, {{ t "receipt_subtotal"}}: {{ money_of $li.Subtotal}}{{ if gt $li.CostSaving 0.0 }}, {{ t "receipt_save" }}: {{ money_of $li.CostSaving }}
+{{end}}
 {{end}}
 --------------------------------------------
 {{range $key, $value := .FavorableLineItemMap}}
-{{index $key}}:
+{{t $key}}{{ t "product" }}:
 {{range $value }}
-{{ . }}
-{{end}}
-{{end}}
+{{ t "receipt_name"}}: {{ .Product.Name }}, {{ t "receipt_quantity"}}: {{ .Quantity }}
+{{end}}{{end}}
 --------------------------------------------
-total: {{ .Total }}(元)
+{{ t "receipt_total" }}: {{ money_of .Total }}
 {{if gt .CostSaving 0.0 }}
-cost saving: {{ .CostSaving }}(元)
+{{ t "receipt_save" }}: {{ money_of .CostSaving }}
 {{end}}
 ********************************************

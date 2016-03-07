@@ -10,10 +10,10 @@ type FavorableLineItem struct {
 	Type           string
 }
 
-func (f FavorableLineItem) String() string {
-	product, ok := products[f.ProductBarCode]
-	if !ok {
+func (f FavorableLineItem) Product() Product {
+	if product, ok := products[f.ProductBarCode]; !ok {
 		panic(fmt.Sprintf("FavorableLineItem#String: has no product with BarCode %s", f.ProductBarCode))
+	} else {
+		return product
 	}
-	return fmt.Sprintf("name: %s, quantity: %d", product.Name, f.Quantity)
 }

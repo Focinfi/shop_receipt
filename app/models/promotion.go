@@ -2,8 +2,9 @@ package models
 
 import (
 	"fmt"
-	"github.com/Focinfi/shop_receipt/libs"
 	"strings"
+
+	"github.com/Focinfi/shop_receipt/libs"
 )
 
 type PromotionCounter interface {
@@ -37,13 +38,13 @@ func (counter DiscountPromotionCounter) SubTotal(price float64, quantity int) fl
 	return libs.Round(price*counter.Discount*float64(quantity), 2)
 }
 
-var ThreeForTwoPromotionType = PromotionType{Name: "3 for 2", PromotionCounter: ThreeForTwoPromotionCounter{}}
+var ThreeForTwoPromotionType = PromotionType{Name: "3_for_2", PromotionCounter: ThreeForTwoPromotionCounter{}}
 
 func MakeDiscountPromotionType(discount float64) PromotionType {
 	if discount < 0 || discount >= 1 {
 		panic("makeDiscountPromotionType: discount should be in (0~1)")
 	}
-	return PromotionType{Name: fmt.Sprintf("Dicount %-2f", discount), PromotionCounter: DiscountPromotionCounter{discount}}
+	return PromotionType{Name: fmt.Sprintf("Discount_%-2f", discount), PromotionCounter: DiscountPromotionCounter{discount}}
 }
 
 type Promotion struct {

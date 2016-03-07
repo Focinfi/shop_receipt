@@ -3,12 +3,12 @@ package models
 import (
 	"bytes"
 	"fmt"
-	"github.com/Focinfi/shop_receipt/libs"
-
 	"regexp"
 	"strconv"
 	"strings"
 	"text/template"
+
+	"github.com/Focinfi/shop_receipt/libs"
 )
 
 type Receipt struct {
@@ -58,10 +58,10 @@ func (r Receipt) CostSaving() float64 {
 func (r Receipt) FavorableLineItemMap() map[string][]FavorableLineItem {
 	favorableLineItemsMap := map[string][]FavorableLineItem{}
 	for _, li := range r.LineItems {
-		for _, promotion := range FindAllPromotions(li.product.BarCode) {
+		for _, promotion := range FindAllPromotions(li.Product.BarCode) {
 			if promotion.Printable {
 				favorableLineItem := FavorableLineItem{
-					ProductBarCode: li.product.BarCode,
+					ProductBarCode: li.Product.BarCode,
 					Quantity:       promotion.FreeProductQuantity(li.Quantity),
 					Type:           promotion.Name,
 				}
@@ -73,10 +73,11 @@ func (r Receipt) FavorableLineItemMap() map[string][]FavorableLineItem {
 }
 
 func (r Receipt) Message() string {
-	tmpl, err := template.ParseFiles(libs.TmplFilePathWithName("receipt"))
+	tmpl, err := template.New("receipt.tmpl").Funcs(libs.ReceiptFuncMap).ParseFiles(libs.TmplFilePathWithName("receipt"))
 	if err != nil {
 		panic("Receipt#Message: " + err.Error())
 	}
+
 	var outputs bytes.Buffer
 	tmpl.Execute(&outputs, r)
 	return outputs.String()

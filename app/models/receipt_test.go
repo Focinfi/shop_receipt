@@ -2,8 +2,9 @@ package models
 
 import (
 	"fmt"
-	. "github.com/smartystreets/goconvey/convey"
 	"testing"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 var Describ = Convey
@@ -12,14 +13,14 @@ var It = Convey
 var Expect = So
 
 var (
-	cup          = Product{BarCode: "FTC9001001", Name: "Cup", Price: float64(14), Currency: RMB}
-	coffee       = Product{BarCode: "FTC9001002", Name: "Coffee", Price: float64(4), Currency: RMB}
-	sugar        = Product{BarCode: "FTC9001003", Name: "Sugar", Price: float64(0.5), Currency: RMB}
+	cup          = Product{BarCode: "FTC9001001", Name: "马克杯", Price: float64(14)}
+	coffee       = Product{BarCode: "FTC9001002", Name: "拿铁咖啡", Price: float64(4)}
+	sugar        = Product{BarCode: "FTC9001003", Name: "方糖", Price: float64(0.5)}
 	testProducts = map[string]Product{cup.BarCode: cup, coffee.BarCode: coffee, sugar.BarCode: sugar}
 
 	cup3For2Promotion              = Promotion{ThreeForTwoPromotionType, cup.BarCode, 99, true}
 	cupNinetyFiveDiscountPromotion = Promotion{MakeDiscountPromotionType(0.95), cup.BarCode, 10, false}
-	coffeeNinetyDiscountPromotion  = Promotion{MakeDiscountPromotionType(0.90), coffee.BarCode, 10, false}
+	coffeeNinetyDiscountPromotion  = Promotion{MakeDiscountPromotionType(0.95), coffee.BarCode, 10, false}
 
 	testPromotions = map[string]Promotion{
 		fmt.Sprintf("%s/%s", cup.BarCode, cup3For2Promotion.Name):                cup3For2Promotion,
@@ -33,27 +34,6 @@ var (
 		coffee.BarCode,
 		fmt.Sprintf("%s-%d", sugar.BarCode, 2),
 	}
-	message = `*******<Frank's Shop> Shopping List*********
-
-name: Cup, quantity: 3, unit price: 14.00(元), subtotal: 28.00(元), cost saving: 14.00(元)
-
-name: Coffee, quantity: 1, unit price: 4.00(元), subtotal: 3.60(元), cost saving: 0.40(元)
-
-name: Sugar, quantity: 2, unit price: 0.50(元), subtotal: 1.00(元)
-
---------------------------------------------
-
-3 for 2:
-
-name: Cup, quantity: 1
-
-
---------------------------------------------
-total: 32.6(元)
-
-cost saving: 14.4(元)
-
-********************************************`
 )
 
 func TestLineItem(t *testing.T) {
@@ -64,7 +44,6 @@ func TestLineItem(t *testing.T) {
 		It("creates a new LineItem", func() {
 			Expect(lineItem.Subtotal(), ShouldEqual, float64(28))
 			Expect(lineItem.CostSaving(), ShouldEqual, float64(14))
-			Expect(lineItem.String(), ShouldEqual, "name: Cup, quantity: 3, unit price: 14.00(元), subtotal: 28.00(元), cost saving: 14.00(元)")
 		})
 	})
 }
@@ -76,10 +55,10 @@ func TestReceipt(t *testing.T) {
 		receipt := NewReceipt(testBarCodes)
 		It("creates a new Receipt", func() {
 			Expect(len(receipt.LineItems), ShouldEqual, 3)
-			Expect(receipt.Total(), ShouldEqual, float64(14*2+4*0.9+0.5*2))
-			Expect(receipt.CostSaving(), ShouldEqual, float64(14*1+4*0.1))
-			Expect(receipt.FavorableLineItemMap()["3 for 2"][0].Quantity, ShouldEqual, 1)
-			Expect(receipt.Message(), ShouldEqual, message)
+			Expect(receipt.Total(), ShouldEqual, float64(14*2+4*0.95+0.5*2))
+			Expect(receipt.CostSaving(), ShouldEqual, float64(14*1+4*0.05))
+			Expect(receipt.FavorableLineItemMap()["3_for_2"][0].Quantity, ShouldEqual, 1)
+			t.Logf("\nProducts:\n%v\nPromotions:\n%v\nInput:\n%v\n\nOutput:\n%v", testProducts, testPromotions, testBarCodes, receipt.Message())
 		})
 	})
 }
