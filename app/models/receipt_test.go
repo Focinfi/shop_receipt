@@ -96,7 +96,7 @@ func TestMessage(t *testing.T) {
 			t.Logf("\n%s", NewReceipt(demoBarCodes).Message())
 		})
 
-		Context("when there has 95 persent discount no promotions", func() {
+		Context("when there has 95 persent discount promotions", func() {
 			products = testProducts
 			promotions = map[string]Promotion{
 				fmt.Sprintf("%s/%s", apple.BarCode, appleNineFiveDiscountPromotion.Name): appleNineFiveDiscountPromotion,
