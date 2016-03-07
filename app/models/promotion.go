@@ -7,8 +7,11 @@ import (
 	"github.com/Focinfi/shop_receipt/libs"
 )
 
+// PromotionCounter defines two behavior of a promotion counter
 type PromotionCounter interface {
+	// FreeProductQuantity should return how many products can be free
 	FreeProductQuantity(allProductQuantity int) int
+	// SubTotal should return the subtotal
 	SubTotal(price float64, quantity int) float64
 }
 
@@ -17,6 +20,7 @@ type PromotionType struct {
 	PromotionCounter
 }
 
+// ThreeForTwoPromotionCounter defines for 3 for 2 promotion
 type ThreeForTwoPromotionCounter struct{}
 
 func (counter ThreeForTwoPromotionCounter) FreeProductQuantity(allProductQuantity int) int {
@@ -28,6 +32,7 @@ func (counter ThreeForTwoPromotionCounter) SubTotal(price float64, quantity int)
 	return libs.Round(price*float64(quantity/3*2+left), 2)
 }
 
+// DiscountPromotionCounter defines for discount poromtion
 type DiscountPromotionCounter struct{ Discount float64 }
 
 func (counter DiscountPromotionCounter) FreeProductQuantity(allProductQuantity int) int {
@@ -40,6 +45,7 @@ func (counter DiscountPromotionCounter) SubTotal(price float64, quantity int) fl
 
 var ThreeForTwoPromotionType = PromotionType{Name: "3_for_2", PromotionCounter: ThreeForTwoPromotionCounter{}}
 
+// MakeDiscountPromotionType allocates and returns a discount promotion type with the given discount float64
 func MakeDiscountPromotionType(discount float64) PromotionType {
 	if discount < 0 || discount >= 1 {
 		panic("makeDiscountPromotionType: discount should be in (0~1)")
@@ -51,11 +57,13 @@ type Promotion struct {
 	PromotionType
 	ProductBarCode string
 	Weight         int
-	Printable      bool
+	// Printable signs if this promotion should be printed in favorable products part of receipt
+	Printable bool
 }
 
 var promotions = map[string]Promotion{}
 
+// FindAllPromotions finds and return all promotions as a []Promotion of a product with the given barCode
 func FindAllPromotions(barCode string) []Promotion {
 	all := []Promotion{}
 	maxWeight := 0

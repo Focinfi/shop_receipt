@@ -15,9 +15,10 @@ type Receipt struct {
 	LineItems map[string]*LineItem
 }
 
+// NewReceipt allocates and returns a new Receipt with the given barCodes.
+// It will treat "P100010-2" as a "P100010" with quantity 2.
 func NewReceipt(barCodes []string) *Receipt {
 	lineItems := map[string]*LineItem{}
-	// init lineItems
 	for _, barCode := range barCodes {
 		quantityCode := regexp.MustCompile("-[0-9]+$").FindString(barCode)
 		productBarCode := barCode
@@ -38,6 +39,7 @@ func NewReceipt(barCodes []string) *Receipt {
 	return &Receipt{LineItems: lineItems}
 }
 
+// Total sums and returns subtotal of every LineItems
 func (r Receipt) Total() float64 {
 	var total float64
 	for _, li := range r.LineItems {
@@ -47,6 +49,7 @@ func (r Receipt) Total() float64 {
 	return total
 }
 
+// CostSaving sums and returns cost saving of every Lineitem
 func (r Receipt) CostSaving() float64 {
 	var costSaving float64
 	for _, li := range r.LineItems {
@@ -55,6 +58,7 @@ func (r Receipt) CostSaving() float64 {
 	return costSaving
 }
 
+// FavorableLineItemMap traverses LineItems and returns all FavorableLineItem as map
 func (r Receipt) FavorableLineItemMap() map[string][]FavorableLineItem {
 	favorableLineItemsMap := map[string][]FavorableLineItem{}
 	for _, li := range r.LineItems {
@@ -72,6 +76,8 @@ func (r Receipt) FavorableLineItemMap() map[string][]FavorableLineItem {
 	return favorableLineItemsMap
 }
 
+// Message returns the message of this Receipt.
+// It will panic if template parsing fails
 func (r Receipt) Message() string {
 	tmpl, err := template.New("receipt.tmpl").Funcs(libs.ReceiptFuncMap).ParseFiles(libs.TmplFilePathWithName("receipt"))
 	if err != nil {
@@ -80,5 +86,6 @@ func (r Receipt) Message() string {
 
 	var outputs bytes.Buffer
 	tmpl.Execute(&outputs, r)
-	return outputs.String()
+	// go1.5 does not suppot {{-
+	return regexp.MustCompile("\n+").ReplaceAllString(outputs.String(), "\n")
 }
