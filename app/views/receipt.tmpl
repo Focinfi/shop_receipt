@@ -9,7 +9,7 @@
 {{range $key, $value := $favroable_map}}
 {{t $key}}{{ t "product" }}:
 {{range $value }}
-{{ t "receipt_name"}}: {{ .Product.Name }}, {{ t "receipt_quantity"}}: {{ .Quantity }}
+{{ t "receipt_name"}}: {{ .Product.Name }}, {{ t "receipt_quantity"}}: {{ .Quantity }} {{with $unit_key := unit_key_of .Product.Unit }}{{ t $unit_key }}{{end}}
 {{end}}
 {{end}}
 {{end}}

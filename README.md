@@ -1,6 +1,6 @@
 ## Shop Receipt
 
-## What this project tries to resolve?
+## What this project tries to solve?
 
 ```
 需求描述
